@@ -3,6 +3,7 @@ import { ProtectedRoute } from './auth/ProtectedRoute.tsx'
 import { useAuth } from './auth/AuthContext.tsx'
 import { LoginPage } from './features/auth/LoginPage.tsx'
 import { RegisterPage } from './features/auth/RegisterPage.tsx'
+import { ProfilePage } from './features/profile/ProfilePage.tsx'
 
 export default function App() {
   return <Routes>
@@ -10,6 +11,7 @@ export default function App() {
     <Route path="/register" element={<RegisterPage />} />
     <Route element={<ProtectedRoute />}>
       <Route path="/discover" element={<DiscoverPlaceholder />} />
+      <Route path="/profile" element={<ProfilePage />} />
     </Route>
     <Route path="/" element={<HomeRedirect />} />
     <Route path="*" element={<Navigate to="/" replace />} />
