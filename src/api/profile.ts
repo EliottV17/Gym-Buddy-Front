@@ -20,6 +20,17 @@ export function useProfile() {
   return useQuery({ queryKey: PROFILE_KEY, queryFn: getProfile })
 }
 
+export const SUGGESTIONS_KEY = ['profile', 'suggestions'] as const
+
+/** GET /profile/suggestions — nearby candidates. Backend clamps limit to 1..20. */
+export async function getSuggestions(limit = 20): Promise<User[]> {
+  return apiClient<User[]>(`/profile/suggestions?limit=${limit}`)
+}
+
+export function useSuggestions(limit = 20) {
+  return useQuery({ queryKey: SUGGESTIONS_KEY, queryFn: () => getSuggestions(limit) })
+}
+
 /**
  * Mutation hook for PATCH /profile/me. On success the cached profile is updated
  * from the mutation response so the view side stays in sync — no stale reads.

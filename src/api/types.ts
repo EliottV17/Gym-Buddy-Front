@@ -94,4 +94,22 @@ export type UpdateProfileRequest = {
   searchDistanceKm?: number
 }
 
+// Hand-mirrored swipe types. Keep in sync with the backend source
+// (src/swipes/entities/swipe.entity.ts, src/swipes/dto/create-swipe.dto.ts).
+// The Swipe entity also returns FK relations (swiper/swipedUser); the frontend
+// only needs the fields below.
+
+export type SwipeAction = 'LIKE' | 'PASS'
+
+export type CreateSwipeRequest = { swipedId: string; action: SwipeAction }
+
+export type Swipe = {
+  id: string
+  action: SwipeAction
+  createdAt?: string
+}
+
+/** POST /swipes response. */
+export type SwipeResult = { swipe: Swipe; matched: boolean }
+
 export type ApiErrorShape = { message?: string | string[] }
