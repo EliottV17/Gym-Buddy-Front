@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { apiClient, clearStoredToken, getStoredToken, storeToken } from '../api/client.ts'
 import type { AuthResponse, LoginRequest, RegisterRequest, User } from '../api/types.ts'
@@ -21,6 +22,7 @@ function authToken(response: AuthResponse): string {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient()
   const [token, setToken] = useState<string | null>(() => getStoredToken())
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(Boolean(token))
@@ -59,6 +61,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     clearStoredToken()
     setToken(null)
     setUser(null)
+    // Purge the whole query cache so the next session on this browser
+    // cannot read the previous user's cached profile/suggestions/matches.
+    queryClient.clear()
   }
 
   return (
