@@ -7,6 +7,7 @@ import { ProfilePage } from './features/profile/ProfilePage.tsx'
 import { DiscoveryPage } from './features/discovery/DiscoveryPage.tsx'
 import { MatchDetailPage } from './features/matches/MatchDetailPage.tsx'
 import { MatchListPage } from './features/matches/MatchListPage.tsx'
+import { ChatPage } from './features/chat/ChatPage.tsx'
 
 export default function App() {
   return <Routes>
@@ -17,6 +18,7 @@ export default function App() {
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/matches" element={<MatchListPage />} />
       <Route path="/matches/:id" element={<MatchDetailPage />} />
+      <Route path="/matches/:matchId/chat" element={<ChatPage />} />
     </Route>
     <Route path="/" element={<HomeRedirect />} />
     <Route path="*" element={<Navigate to="/" replace />} />
