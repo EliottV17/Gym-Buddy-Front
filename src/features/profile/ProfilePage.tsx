@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useAuth } from '../../auth/AuthContext.tsx'
+import { useAuth } from '../../auth/useAuth.ts'
 import { useProfile } from '../../api/profile.ts'
 import { geoPointToLatLng } from '../../api/types.ts'
 import type { User } from '../../api/types.ts'

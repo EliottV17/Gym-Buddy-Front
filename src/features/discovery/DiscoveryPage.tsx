@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useSuggestions } from '../../api/profile.ts'
 import { isDuplicateSwipe, useCreateSwipe } from '../../api/swipes.ts'
 import type { SwipeAction } from '../../api/types.ts'
-import { useAuth } from '../../auth/AuthContext.tsx'
+import { useAuth } from '../../auth/useAuth.ts'
 import { EmptySuggestions } from './EmptySuggestions.tsx'
 import { SwipeCard } from './SwipeCard.tsx'
 

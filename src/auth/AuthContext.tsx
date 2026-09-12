@@ -1,19 +1,8 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import { apiClient, clearStoredToken, getStoredToken, storeToken } from '../api/client.ts'
+import { useEffect, useState, type ReactNode } from 'react'
+import { ApiError, apiClient, clearStoredToken, getStoredToken, storeToken } from '../api/client.ts'
 import type { AuthResponse, LoginRequest, RegisterRequest, User } from '../api/types.ts'
-
-type AuthContextValue = {
-  user: User | null
-  token: string | null
-  isAuthenticated: boolean
-  isLoading: boolean
-  login: (credentials: LoginRequest) => Promise<void>
-  register: (details: RegisterRequest) => Promise<void>
-  logout: () => void
-}
-
-const AuthContext = createContext<AuthContextValue | null>(null)
+import { authContext } from './authContext.ts'
 
 function authToken(response: AuthResponse): string {
   const token = response.accessToken ?? response.token
@@ -31,10 +20,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!token) return
     apiClient<User>('/profile/me')
       .then(setUser)
-      .catch(() => {
-        clearStoredToken()
-        setToken(null)
-        setUser(null)
+      .catch((cause: unknown) => {
+        // Only an invalid/expired token ends the session (scenario: expired
+        // token → redirect to /login). A network outage must NOT log the user
+        // out: keep the token so the app loads and the individual queries
+        // surface the failure with a retry (R24) instead.
+        if (cause instanceof ApiError && cause.status === 401) {
+          clearStoredToken()
+          setToken(null)
+          setUser(null)
+        }
       })
       .finally(() => setIsLoading(false))
   }, [token])
@@ -67,14 +62,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated: Boolean(token && user), isLoading, login, register, logout }}>
+    <authContext.Provider
+      // The session survives a failed profile fetch: isAuthenticated tracks the
+      // stored token, not the lazily loaded user profile.
+      value={{ user, token, isAuthenticated: Boolean(token), isLoading, login, register, logout }}
+    >
       {children}
-    </AuthContext.Provider>
+    </authContext.Provider>
   )
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext)
-  if (!context) throw new Error('useAuth must be used within an AuthProvider')
-  return context
 }
