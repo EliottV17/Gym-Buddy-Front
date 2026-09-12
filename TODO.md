@@ -32,3 +32,8 @@ Cluster to look at first when triaging (repeated across lenses):
 
 - **Chat links** — R1 / R2-001 / R3-001 / R4-2 all point at the `/:id/chat` navigation surface (`MatchDetailPage`, `MatchListPage`, raw id in path). Revisit together with the PR 5 Chat work.
 - **AuthContext resilience** — R2-002 / R3-002 / R3-003 / R4-1 all point at the hydration catch and `isAuthenticated` semantics. Revisit if the 401-only decision is revisited.
+
+## Repo hygiene (from the PR 4 pre-commit review)
+
+- [ ] **AGENTS.md doc drift** — the "Architecture (current)" section still describes a scaffold-only app (CSS modules, no routing/API layer), but the repo already has react-router, react-query, an API layer and Tailwind utility classes. Update AGENTS.md to reflect reality so future reviews (including the pre-commit guard) stop flagging it.
+- [ ] **UI duplication** — `Row`, `formatCoord` and the page shell/branding header are duplicated across `src/features/matches/MatchDetailPage.tsx`, `src/features/matches/MatchListPage.tsx` and `src/features/profile/ProfilePage.tsx`. Extract shared UI helpers to keep the layouts in sync.
