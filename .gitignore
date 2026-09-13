@@ -26,3 +26,4 @@ dist-ssr
 
 .pi/
 .gga
+sentinel-worker/worker
